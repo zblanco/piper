@@ -3,4 +3,9 @@ defmodule Piper.Fact do
     value
     runnable
   )a
+
+  @type t() :: %__MODULE__{
+    value: term(),
+    runnable: Piper.runnable() | nil
+  }
 end

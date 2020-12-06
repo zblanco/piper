@@ -5,10 +5,10 @@ defmodule Piper do
   While this works, it's limited to static input-output Step dependencies.
 
   This means it cannot express conditional logic or complex control flow unlike
-  more implementations like RETE.
+  more complex forward chaining implementations like RETE.
 
-  However it is sufficient for many simple parallelizeable job pipelines such as
-    in Natural Language Processing.
+  However Piper is sufficient for many simple parallelizeable job pipelines such as
+    in Natural Language Processing where one might want to modify and model the pipeline at runtime.
   """
   alias Piper.{Fact, Step}
 
@@ -38,7 +38,7 @@ defmodule Piper do
   @doc """
   Runs a given runnable to produce a new fact.
   """
-  def run(%Step{work: work} = step, %Fact{value: value} = fact) do
+  def run({%Step{work: work} = step, %Fact{value: value} = fact}) do
     result = execute(work, value)
 
     %Fact{
@@ -78,16 +78,16 @@ defmodule Piper do
   end
 
   def next_runnables(
-        flow,
+        %__MODULE__{} = piper,
         raw_fact
       ),
-      do: next_runnables(flow, %Fact{value: raw_fact})
+      do: next_runnables(piper, %Fact{value: raw_fact})
 
-  @spec add_step(Piper.t(), Piper.Step.t()) :: Piper.t()
+  @spec add_step(Piper.t(), Piper.Step.t() | keyword()) :: Piper.t()
   @doc """
   Adds a step connected directly to the root of the Piper graph.
 
-  This means the given step will always produce a runnable when next_runnables/2 is called with a new fact.
+  This means the given step will always produce a runnable when next_runnables/2 is called with a raw fact.
   """
   def add_step(%__MODULE__{flow: flow} = piper, %Step{} = step) do
     %__MODULE__{
@@ -95,8 +95,12 @@ defmodule Piper do
       | flow:
           flow
           |> Graph.add_vertex(step)
-          |> Graph.add_edge(:root, step, label: {})
+          |> Graph.add_edge(:root, step, label: {:root, step.name})
     }
+  end
+
+  def add_step(%__MODULE__{} = piper, step_params) when is_list(step_params) do
+    add_step(piper, Step.new(step_params))
   end
 
   @spec add_step(
@@ -120,8 +124,8 @@ defmodule Piper do
     }
   end
 
-  def add_step(piper, parent_step_name, [] = child_step_params)
-      when is_binary(parent_step_name) do
+  def add_step(piper, parent_step_name, child_step_params)
+      when is_binary(parent_step_name) and is_list(child_step_params) do
     add_step(piper, parent_step_name, Step.new(child_step_params))
   end
 
