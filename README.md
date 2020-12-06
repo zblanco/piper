@@ -5,6 +5,10 @@ A minimal tool for building Dataflow graphs of dependent steps.
 Uses a simple DAG (Directed Acyclic Graph) model for building a static 
   representation of dependencies between Steps. This is just a datastructure
   so it doesn't impose any runtime execution constraints. 
+
+Piper was implemented for demonstration purposes, and as such is not published to Hex.
+
+Feel free to fork, or vendor into your own project should you find this pattern useful.
   
 ## Usage
 
