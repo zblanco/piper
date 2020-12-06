@@ -11,7 +11,7 @@ Uses a simple DAG (Directed Acyclic Graph) model for building a static
 Any implementation of the `Piper.Runner` behaviour may execute the set of Runnables/Tasks/Jobs returned by the `Piper.next_runnables/2` function using `Piper.run/1` in a runtime context.
 
 Any runnable returned by `next_runnables/2` is guaranteed to be parallelizeable in context
-to other runnables so the `Piper.Runner` can safely dispatch these tasks to separate processes.
+to other runnables so a `Piper.Runner` can safely dispatch these tasks to separate processes.
 
 ## Installation
 
