@@ -1,6 +1,6 @@
 # Piper
 
-A minimal tool for building Dataflow graphs of dependent steps.
+A minimal tool for building and evaluating Dataflow graphs of dependent steps.
 
 Uses a simple DAG (Directed Acyclic Graph) model for building a static 
   representation of dependencies between Steps. This is just a datastructure
