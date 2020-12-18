@@ -129,6 +129,11 @@ defmodule Piper do
     add_step(piper, parent_step_name, Step.new(child_step_params))
   end
 
+  def add_step(piper, %Step{} = parent_step, child_step_params)
+      when is_list(child_step_params) do
+    add_step(piper, parent_step, Step.new(child_step_params))
+  end
+
   def steps(%__MODULE__{flow: flow}) do
     Enum.reject(Graph.vertices(flow), &match?(:root, &1))
   end
