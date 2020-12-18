@@ -129,6 +129,10 @@ defmodule Piper do
     add_step(piper, parent_step_name, Step.new(child_step_params))
   end
 
+  def steps(%__MODULE__{flow: flow}) do
+    Enum.reject(Graph.vertices(flow), &match?(:root, &1))
+  end
+
   defp get_step_by_name(flow, name) do
     Enum.find(Graph.vertices(flow), nil, fn
       %Step{name: step_name} -> step_name == name
